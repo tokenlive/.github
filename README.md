@@ -1,7 +1,4 @@
-# .github
 # TokenLive
-
-English | [中文版](./README-zh.md)
 
 > A high-performance LLM API gateway based on the architectural concepts of [joylive-agent](https://github.com/jd-opensource/joylive-agent)
 >
