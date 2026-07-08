@@ -14,37 +14,7 @@ In the cloud-native era where microservices and large language models intertwine
 
 TokenLive deeply embraces the Go engineering aesthetics of **"high cohesion, low coupling, high performance"**, adopting an original **Gin Shell + Engine Pipeline** — a "shell + core" layered architecture.
 
-```mermaid
-graph TD
- User(["Downstream Client / Business System"]) -->|API Key Auth| GinShell["Gin Shell"]
-
- subgraph GatewayEngine ["Gateway Engine Core (Zero Gin Dependency, Native net/http)"]
- GinShell -->|HandleRequest| InboundChain{"Inbound Filter Chain"}
- InboundChain -->|1. AuthZ| LimitFilter["AuthFilter (Model Access AuthZ)"]
- LimitFilter -->|2. TPM/RPM Rate Limit Pre-deduction| ValidateFilter["ValidateFilter (Parameter Validation)"]
-
- ValidateFilter --> FallbackInvoker["FallbackInvoker (Model-level Cascading Fallback)"]
-
- subgraph ClusterInvoker ["ClusterInvoker (Single-Model Routing & Retry)"]
- FallbackInvoker -->|Get Available Endpoints| Discovery["Static / K8s Service Discovery"]
- Discovery --> RouterChain{"Router Chain (Dynamic Filtering)"}
- RouterChain -->|Circuit Breaker / Model / Tag Filtering| LoadBalancer["8 Advanced Load Balancing Algorithms"]
- LoadBalancer -->|Select Endpoint| ProviderInvoker["ProviderInvoker Adapter"]
- end
-
- ProviderInvoker -->|Call Failed & error_rules Triggered| AttemptRetry["Exponential Jitter Backoff Retry"]
- ProviderInvoker -->|SSE Incremental Stream Interception| OutboundChain{"Outbound Filter Chain"}
-
- OutboundChain -->|1. Token Settlement & Refund| StickySave["2. Session Sticky Save"]
- StickySave -->|3. Metrics & Audit Logging| Done(["Final Success Response"])
- end
-
- subgraph StateLayer ["State & Resilience Layer"]
- LimitFilter & StickySave -.->|Shared Client| RedisState["Redis StateStore"]
- OutboundChain -.->|Persistence / Settlement Failure| CompQueue["Compensation Queue"]
- CompQueue -->|Redis Stream Async Consumption Retry| RedisState
- end
-```
+![AllArch](./all-arch.png)
 
 ### 🛠️ Technical Highlights
 
