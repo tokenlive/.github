@@ -14,7 +14,7 @@ In the cloud-native era where microservices and large language models intertwine
 
 TokenLive deeply embraces the Go engineering aesthetics of **"high cohesion, low coupling, high performance"**, adopting an original **Gin Shell + Engine Pipeline** — a "shell + core" layered architecture.
 
-![AllArch](./all-arch.png)
+![AllArch](./diagram.png)
 
 ### 🛠️ Technical Highlights
 
